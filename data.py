@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from sklearn.datasets import load_breast_cancer
 
-DATA = Path(__file__).resolve().parents[1] / "data"
+DATA = Path(__file__).resolve().parent
 SUBSAMPLE_SEED = 2026
 DIAB130_N = 10_000
 

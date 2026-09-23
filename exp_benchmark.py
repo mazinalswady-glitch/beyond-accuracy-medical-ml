@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from data import load
 from common import MODELS, DATASETS, make_model, all_metrics, calibration_slope_intercept
 
-RES = Path(__file__).resolve().parents[1] / "results"; RES.mkdir(exist_ok=True)
+RES = Path(__file__).resolve().parent; RES.mkdir(exist_ok=True)
 CV_SEED, N_SPLITS, N_REPEATS = 42, 10, 5
 
 

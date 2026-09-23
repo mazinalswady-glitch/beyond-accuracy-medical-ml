@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from data import load
 from common import MODELS, make_model, all_metrics
 
-RES = Path(__file__).resolve().parents[1] / "results"
+RES = Path(__file__).resolve().parent
 
 
 def _run(strategy, m, X, y, tr, te, rep, fold):

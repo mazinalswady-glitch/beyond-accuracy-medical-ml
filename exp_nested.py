@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from data import load
 from common import MODELS, DATASETS, make_model, all_metrics
 
-RES = Path(__file__).resolve().parents[1] / "results"
+RES = Path(__file__).resolve().parent
 OUTER_SEED, INNER_SEED = 7, 11
 
 GRIDS = {

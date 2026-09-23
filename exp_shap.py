@@ -23,7 +23,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from data import load
 from common import DATASETS, make_model, pairwise_stability, correlation_groups
 
-RES = Path(__file__).resolve().parents[1] / "results"
+RES = Path(__file__).resolve().parent
 R = 30
 SHAP_MODELS = ["LR", "RF", "XGB"]
 

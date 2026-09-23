@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from data import load
 from common import MODELS, DATASETS, make_model, pairwise_stability
 
-RES = Path(__file__).resolve().parents[1] / "results"
+RES = Path(__file__).resolve().parent
 
 
 def main(datasets=DATASETS):

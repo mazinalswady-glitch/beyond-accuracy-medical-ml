@@ -7,16 +7,16 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, str(Path(__file__).parent))
 from common import MODELS, DATASETS, DS_NAMES
 
-ROOT = Path(__file__).resolve().parents[1]
-RES, FIG = ROOT / "results", ROOT / "figures"; FIG.mkdir(exist_ok=True)
-TAB = RES / "tables"
+ROOT = Path(__file__).resolve().parent
+RES = FIG = ROOT
+TAB = ROOT
 plt.rcParams.update({"font.family": "DejaVu Serif", "font.size": 9, "axes.spines.top": False,
                      "axes.spines.right": False})
 COL = {"LR": "#1f77b4", "RF": "#2ca02c", "XGB": "#d62728", "SVM": "#9467bd", "MLP": "#ff7f0e", "NB": "#8c564b"}
 
 
 def fig_auc():
-    perf = pd.read_csv(TAB / "performance.csv")
+    perf = pd.read_csv(TAB / "tbl_performance.csv")
     fig, axes = plt.subplots(1, 4, figsize=(12, 2.9), sharey=False)
     for ax, ds in zip(axes, DATASETS):
         d = perf[perf.dataset == ds].set_index("model").loc[MODELS]
@@ -54,7 +54,7 @@ def fig_calibration():
 
 
 def fig_hier():
-    hb = pd.read_csv(TAB / "hier_bayes.csv")
+    hb = pd.read_csv(TAB / "tbl_hier_bayes.csv")
     hb = hb[hb.metric == "AUC"].copy()
     hb["label"] = hb.a + " vs " + hb.b
     hb = hb.iloc[::-1]
@@ -100,7 +100,7 @@ def fig_cd():
 
 
 def fig_shap():
-    s = pd.read_csv(TAB / "shap_stability.csv")
+    s = pd.read_csv(TAB / "tbl_shap_stability.csv")
     fig, axes = plt.subplots(1, 4, figsize=(12, 3.3), sharey=True)
     series = [("seed", "feature", "tau", "τ, seed", "#90caf9"),
               ("boot", "feature", "tau", "τ, bootstrap", "#1565c0"),
@@ -127,7 +127,7 @@ def fig_shap():
 
 
 def fig_perm():
-    p = pd.read_csv(TAB / "perm_stability.csv")
+    p = pd.read_csv(TAB / "tbl_perm_stability.csv")
     fig, axes = plt.subplots(1, 4, figsize=(12, 3.1), sharey=True)
     des = [("model", "model seed only", "#1565c0"), ("perm", "permutation seed only", "#ef6c00"),
            ("both", "both vary", "#757575")]

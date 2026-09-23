@@ -4,7 +4,11 @@ Code, data and results for the manuscript *"Beyond Accuracy: A Multi-Axis Framew
 Statistical Model Comparison, Calibration, and Explanation Stability in Medical Machine
 Learning"* (M. Mohammed, Northern Technical University).
 
-## Data (`data/`, SHA-256 in `data/SHA256SUMS`)
+## Layout
+
+All files are in the repository root (flat layout): data files, scripts (`*.py`), raw results (`*.csv`, `*.npz`, `*.json`), summary tables (`tbl_*.csv`) and figures (`fig*.png`).
+
+## Data (SHA-256 in `SHA256SUMS`)
 
 | File | Source | Notes |
 |---|---|---|
@@ -43,7 +47,7 @@ bash run_all.sh          # approx. 3-4 h on a 2-core CPU
 | Permutation designs | model seeds 0–R-1, permutation seeds 0–R-1 |
 | PyMC sampling | 0 |
 
-## Scripts (`src/`)
+## Scripts
 
 | Script | Output |
 |---|---|

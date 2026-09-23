@@ -4,7 +4,7 @@ import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
 
-FIG = Path(__file__).resolve().parents[1] / "figures"; FIG.mkdir(exist_ok=True)
+FIG = Path(__file__).resolve().parent
 plt.rcParams.update({"font.family": "DejaVu Serif"})
 
 boxes = [

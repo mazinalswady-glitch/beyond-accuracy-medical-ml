@@ -11,8 +11,8 @@ from common import MODELS, DATASETS
 from stats_tests import (holm, corrected_resampled_t, bayes_correlated_t, friedman_nemenyi,
                          hierarchical_bayes)
 
-RES = Path(__file__).resolve().parents[1] / "results"
-TAB = RES / "tables"; TAB.mkdir(exist_ok=True)
+RES = Path(__file__).resolve().parent
+TAB = RES  # flat layout: summary tables are saved as tbl_*.csv
 PAIRS = list(itertools.combinations(MODELS, 2))
 # metric: (higher_is_better, region of practical equivalence)
 METRICS = {"AUC": (True, 0.01), "MCC": (True, 0.02), "BAL": (True, 0.01), "BRIER": (False, 0.005)}
@@ -46,7 +46,7 @@ def bench():
                          **{k + "_sd": s[k].std() for k in ["ACC", "BAL", "F1", "AUC", "MCC", "BRIER"]},
                          "slope": c.slope.mean(), "slope_sd": c.slope.std(),
                          "intercept": c.intercept.mean(), "intercept_sd": c.intercept.std()})
-    perf = pd.DataFrame(rows); perf.to_csv(TAB / "performance.csv", index=False)
+    perf = pd.DataFrame(rows); perf.to_csv(TAB / "tbl_performance.csv", index=False)
     # ---- per-dataset dependence-aware tests
     rows = []
     for metric in METRICS:
@@ -65,7 +65,7 @@ def bench():
             for r, h in zip(block, ph):
                 r["p_holm"] = h
             rows += block
-    sig = pd.DataFrame(rows); sig.to_csv(TAB / "sig_perdataset.csv", index=False)
+    sig = pd.DataFrame(rows); sig.to_csv(TAB / "tbl_sig_perdataset.csv", index=False)
     # ---- pooled descriptive analysis (40 blocks = repeat 0 x 10 folds x 4 datasets)
     pooled = {}
     for metric in METRICS:
@@ -98,7 +98,7 @@ def bench():
             r = hierarchical_bayes(diffs, RHO, rope)
             hb.append({"metric": metric, "a": a, "b": b, **r})
             print("HB", metric, a, b, {k: round(v, 3) for k, v in r.items()}, flush=True)
-    pd.DataFrame(hb).to_csv(TAB / "hier_bayes.csv", index=False)
+    pd.DataFrame(hb).to_csv(TAB / "tbl_hier_bayes.csv", index=False)
     json.dump(out, open(RES / "summary_bench.json", "w"), indent=1, default=float)
 
 
@@ -114,7 +114,7 @@ def nested():
                          "MCC_tuned": tt.MCC.mean(), "BRIER_tuned": tt.BRIER.mean(),
                          "BRIER_default": dd.BRIER.mean(),
                          "best_params_mode": tt.best_params.mode().iloc[0]})
-    pd.DataFrame(rows).to_csv(TAB / "nested_summary.csv", index=False)
+    pd.DataFrame(rows).to_csv(TAB / "tbl_nested_summary.csv", index=False)
     sig = []
     for cfg in ("default", "tuned"):
         for metric in ("AUC", "MCC", "BRIER"):
@@ -133,7 +133,7 @@ def nested():
                 for r, h in zip(block, holm([r["p"] for r in block])):
                     r["p_holm"] = h
                 sig += block
-    pd.DataFrame(sig).to_csv(TAB / "nested_sig.csv", index=False)
+    pd.DataFrame(sig).to_csv(TAB / "tbl_nested_sig.csv", index=False)
     hb = []
     for cfg in ("default", "tuned"):
         for a, b in PAIRS:
@@ -141,7 +141,7 @@ def nested():
             r = hierarchical_bayes(diffs, RHO, 0.01)
             hb.append({"config": cfg, "a": a, "b": b, **r})
             print("HBn", cfg, a, b, {k: round(v, 3) for k, v in r.items()}, flush=True)
-    pd.DataFrame(hb).to_csv(TAB / "nested_hier_bayes.csv", index=False)
+    pd.DataFrame(hb).to_csv(TAB / "tbl_nested_hier_bayes.csv", index=False)
     # Friedman on tuned, pooled 40 blocks (descriptive)
     res = {}
     for cfg in ("default", "tuned"):
@@ -154,7 +154,7 @@ def nested():
 
 def shap_tables():
     s = pd.read_csv(RES / "shap_stability.csv")
-    s.to_csv(TAB / "shap_stability.csv", index=False)
+    s.to_csv(TAB / "tbl_shap_stability.csv", index=False)
     z = np.load(RES / "shap_importances.npz", allow_pickle=True)
     freq = []
     for ds in DATASETS:
@@ -165,17 +165,17 @@ def shap_tables():
                 cnt = pd.Series(names[top.ravel()]).value_counts()
                 for f, c in cnt.items():
                     freq.append({"dataset": ds, "level": level, "model": m, "unit": f, "top5_count": int(c)})
-    pd.DataFrame(freq).to_csv(TAB / "shap_top5_freq.csv", index=False)
+    pd.DataFrame(freq).to_csv(TAB / "tbl_shap_top5_freq.csv", index=False)
 
 
 def perm_tables():
-    p = pd.read_csv(RES / "perm_stability.csv"); p.to_csv(TAB / "perm_stability.csv", index=False)
+    p = pd.read_csv(RES / "perm_stability.csv"); p.to_csv(TAB / "tbl_perm_stability.csv", index=False)
 
 
 def pima():
     df = pd.read_csv(RES / "pima_imputation.csv")
     t = df.groupby(["model", "strategy"])[["AUC", "MCC", "BRIER"]].mean().unstack(1)
-    t.to_csv(TAB / "pima_imputation.csv")
+    t.to_csv(TAB / "tbl_pima_imputation.csv")
     # does the model ranking change?
     r = {}
     for s in df.strategy.unique():
