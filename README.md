@@ -30,6 +30,7 @@ statsmodels, PyMC 5.28.5). CPU only.
 ```bash
 pip install -r requirements.txt
 bash run_all.sh          # approx. 3-4 h on a 2-core CPU
+bash run_revision.sh     # additional analyses added during revision (several hours on one core; scripts resume if interrupted)
 ```
 
 ## Seeds
@@ -59,6 +60,13 @@ bash run_all.sh          # approx. 3-4 h on a 2-core CPU
 | `exp_pima_imputation.py` | imputation sensitivity (median / iterative / drop) |
 | `analysis.py` | corrected resampled t-tests, Bayesian correlated and hierarchical tests, tables |
 | `figures.py`, `fig_framework.py` | figures |
+| `exp_rev_calibration.py` | revision: calibration slope/intercept of the tuned models from regenerated out-of-fold predictions (`tbl_nested_calibration.csv`, `oof_nested.npz`) |
+| `exp_rev_shap.py` | revision: SHAP stability for tuned configurations and for a held-out evaluation set (`shap_stability_{default,tuned}_{insample,heldout}*.csv`) |
+| `exp_rev_threshold.py` | revision: sensitivity of threshold-dependent metrics to a training-fold Youden threshold (`threshold_sensitivity_folds.csv`) |
+
+## Data provenance note
+
+`pima-indians-diabetes.csv` is byte-identical (same SHA-256) to `pima-indians-diabetes.data.csv` in https://github.com/jbrownlee/Datasets, a copy of the NIDDK Pima Indians Diabetes collection.
 
 ## Licence
 
