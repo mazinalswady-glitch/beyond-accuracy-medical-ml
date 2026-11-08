@@ -1,73 +1,66 @@
-# Beyond Accuracy — reproduction code
-
-Code, data and results for the manuscript *"Beyond Accuracy: A Multi-Axis Framework for
+Beyond Accuracy — reproduction code
+Code, data and results for the manuscript "Beyond Accuracy: A Multi-Axis Framework for
 Statistical Model Comparison, Calibration, and Explanation Stability in Medical Machine
-Learning"* (M. Mohammed, Northern Technical University).
-
-## Layout
-
+Learning" (M. Mohammed, Northern Technical University).
+Layout
 All files are in the repository root (flat layout): data files, scripts (`*.py`), raw results (`*.csv`, `*.npz`, `*.json`), summary tables (`tbl_*.csv`) and figures (`fig*.png`).
-
-## Data (SHA-256 in `SHA256SUMS`)
-
-| File | Source | Notes |
-|---|---|---|
-| (loaded from scikit-learn) | UCI Breast Cancer Wisconsin (Diagnostic), doi:10.24432/C5DW2B | 569 cases, 212 malignant (positive) |
-| `pima-indians-diabetes.csv` | Pima Indians Diabetes (Smith et al., 1988), standard 768-case file | zeros in glucose, BP, skin, insulin, BMI treated as missing |
-| `processed.cleveland.data` | UCI Heart Disease, **original processed Cleveland file** (Detrano et al., 1989), doi:10.24432/C52P4X | `num > 0` = disease (139/303); `?` in `ca` (4) and `thal` (2) = missing |
-| `diabetic_data.csv` | UCI Diabetes 130-US Hospitals 1999–2008 (Strack et al., 2014), doi:10.24432/C5230J | first encounter per patient, deaths/hospice removed, outcome = readmission < 30 days; stratified subsample of 10,000 patients (seed 2026) |
-
-The widely circulated Kaggle `heart.csv` is **not** used: its `target` is inverted relative
+Data (SHA-256 in `SHA256SUMS`)
+File	Source	Notes
+(loaded from scikit-learn)	UCI Breast Cancer Wisconsin (Diagnostic), doi:10.24432/C5DW2B	569 cases, 212 malignant (positive)
+`pima-indians-diabetes.csv`	Pima Indians Diabetes (Smith et al., 1988), standard 768-case file	zeros in glucose, BP, skin, insulin, BMI treated as missing
+`processed.cleveland.data`	UCI Heart Disease, original processed Cleveland file (Detrano et al., 1989), doi:10.24432/C52P4X	`num > 0` = disease (139/303); `?` in `ca` (4) and `thal` (2) = missing
+`diabetic_data.csv`	UCI Diabetes 130-US Hospitals 1999–2008 (Strack et al., 2014), doi:10.24432/C5230J	first encounter per patient, deaths/hospice removed, outcome = readmission < 30 days; stratified subsample of 10,000 patients (seed 2026)
+The widely circulated Kaggle `heart.csv` is not used: its `target` is inverted relative
 to UCI (`target = 1` corresponds to UCI `num = 0`) and it contains invalid codes
 (`ca = 4`, `thal = 0`).
-
-## Environment
-
+Environment
 Python 3.11; pinned versions in `requirements.txt`
 (scikit-learn 1.8.0, XGBoost 3.2.0, SHAP 0.51.0, SciPy 1.17.1, NumPy, pandas 3.0.2,
 statsmodels, PyMC 5.28.5). CPU only.
-
 ```bash
 pip install -r requirements.txt
 bash run_all.sh          # approx. 3-4 h on a 2-core CPU
 bash run_revision.sh     # additional analyses added during revision (several hours on one core; scripts resume if interrupted)
 ```
-
-## Seeds
-
-| Purpose | Seed |
-|---|---|
-| Diabetes-130 subsample | 2026 |
-| 5 × 10 repeated stratified CV (all models share partitions) | 42 |
-| Model seed in benchmark / nested CV | 0 |
-| Nested CV outer / inner folds | 7 / 11 |
-| SHAP seed axis | model seeds 0–29 |
-| SHAP bootstrap axis | resample seeds 1000–1029, model seed 0 |
-| SHAP evaluation subsample (Diabetes-130) | 5 |
-| Permutation-importance split / D130 test subsample | 3 / 4 |
-| Permutation designs | model seeds 0–R-1, permutation seeds 0–R-1 |
-| PyMC sampling | 0 |
-
-## Scripts
-
-| Script | Output |
-|---|---|
-| `data.py` | dataset loaders (run directly to print Table 1 and Pima missingness) |
-| `exp_benchmark.py` | determinism check, 5×10 CV metrics, calibration slope/intercept, OOF predictions |
-| `exp_nested.py` | nested CV, default vs tuned on identical outer folds |
-| `exp_shap.py` | SHAP seed/bootstrap stability, collinearity diagnostics |
-| `exp_permutation.py` | permutation-importance stability with model/permutation randomness separated |
-| `exp_pima_imputation.py` | imputation sensitivity (median / iterative / drop) |
-| `analysis.py` | corrected resampled t-tests, Bayesian correlated and hierarchical tests, tables |
-| `figures.py`, `fig_framework.py` | figures |
-| `exp_rev_calibration.py` | revision: calibration slope/intercept of the tuned models from regenerated out-of-fold predictions (`tbl_nested_calibration.csv`, `oof_nested.npz`) |
-| `exp_rev_shap.py` | revision: SHAP stability for tuned configurations and for a held-out evaluation set (`shap_stability_{default,tuned}_{insample,heldout}*.csv`) |
-| `exp_rev_threshold.py` | revision: sensitivity of threshold-dependent metrics to a training-fold Youden threshold (`threshold_sensitivity_folds.csv`) |
-
-## Data provenance note
-
+Seeds
+Purpose	Seed
+Diabetes-130 subsample	2026
+5 × 10 repeated stratified CV (all models share partitions)	42
+Model seed in benchmark / nested CV	0
+Nested CV outer / inner folds	7 / 11
+SHAP seed axis	model seeds 0–29
+SHAP bootstrap axis	resample seeds 1000–1029, model seed 0
+SHAP evaluation subsample (Diabetes-130)	5
+Permutation-importance split / D130 test subsample	3 / 4
+Permutation designs	model seeds 0–R-1, permutation seeds 0–R-1
+PyMC sampling	0
+Scripts
+Script	Output
+`data.py`	dataset loaders (run directly to print Table 1 and Pima missingness)
+`exp_benchmark.py`	determinism check, 5×10 CV metrics, calibration slope/intercept, OOF predictions
+`exp_nested.py`	nested CV, default vs tuned on identical outer folds
+`exp_shap.py`	SHAP seed/bootstrap stability, collinearity diagnostics
+`exp_permutation.py`	permutation-importance stability with model/permutation randomness separated
+`exp_pima_imputation.py`	imputation sensitivity (median / iterative / drop)
+`analysis.py`	corrected resampled t-tests, Bayesian correlated and hierarchical tests, tables
+`figures.py`, `fig_framework.py`	figures
+`exp_rev_calibration.py`	revision: calibration slope/intercept of the tuned models from regenerated out-of-fold predictions (`tbl_nested_calibration.csv`, `oof_nested.npz`)
+`exp_rev_shap.py`	revision: SHAP stability for tuned configurations and for a held-out evaluation set (`shap_stability_{default,tuned}_{insample,heldout}*.csv`)
+`exp_rev_threshold.py`	revision: sensitivity of threshold-dependent metrics to a training-fold Youden threshold (`threshold_sensitivity_folds.csv`)
+Revision analyses: reproducibility and outputs
+Run the revision analyses from the repository root, after installing the pinned dependencies:
+```bash
+bash run_revision.sh
+```
+The script runs, in order, tuned-model calibration, tuned in-sample SHAP stability, threshold sensitivity, and held-out SHAP evaluations for default and tuned configurations on BC/PIMA/HEART and D130. See the script for the exact commands. The analyses may be computationally expensive; the presence of committed result files does not mean a fresh run has been independently verified.
+Revision analysis	Main committed results
+Tuned-model calibration	`tbl_nested_calibration.csv`, `oof_nested.npz`
+Threshold sensitivity	`threshold_sensitivity_folds.csv`
+SHAP, tuned in-sample	`shap_stability_tuned_insample.csv`, `shap_importances_tuned_insample.npz`
+SHAP, held-out BC/PIMA/HEART	`shap_stability_default_heldout_BC_PIMA_HEART.csv`, `shap_stability_tuned_heldout_BC_PIMA_HEART.csv` and corresponding `shap_importances_*.npz`
+SHAP, held-out D130	`shap_stability_default_heldout_D130.csv`, `shap_stability_tuned_heldout_D130.csv` and corresponding `shap_importances_*.npz`
+The revision scripts and their output files are separate from the original benchmark workflow (`run_all.sh`). For a manuscript submission, compare reported numerical values against the corresponding CSV outputs and supplementary tables before asserting exact reproduction. The supplementary tables S1–S6 are not themselves documented as separate files in this repository.
+Data provenance note
 `pima-indians-diabetes.csv` is byte-identical (same SHA-256) to `pima-indians-diabetes.data.csv` in https://github.com/jbrownlee/Datasets, a copy of the NIDDK Pima Indians Diabetes collection.
-
-## Licence
-
+Licence
 Code: MIT. Datasets: see the licences of the original sources (UCI datasets CC BY 4.0).
